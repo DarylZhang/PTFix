@@ -1,0 +1,39 @@
+
+
+
+START
+    FOR each VDE in source code
+        IF VDE contains "URI.create"
+            Locate the Block
+            Create MCE to invoke normalize on URI
+            FOR each Statement in NL (NodeList of Statements in Block)
+                IF Statement contains VE
+                    Replace VE with MCE
+                    BREAK
+                END IF
+            END FOR
+        END IF
+        IF VDE contains "new File"
+            Extract DFN (Declared FileName)
+            Extract FAN (First Argument Name) and FTA (First Argument Type)
+
+            IF FTA == "java.io.File"
+                Construct CE to check if canonical path of DFN starts with canonical path of FAN
+            ELSE
+                Construct CE to check if canonical path of DFN starts with FAN
+            END IF
+
+            Create IFS with CE
+                THEN part of IFS throws IllegalArgumentException
+
+            Locate the Block
+            FOR each Statement in NL
+                IF Statement contains VE
+                    Insert IFS after VE
+                    BREAK
+                END IF
+            END FOR
+        END IF
+    END FOR
+END
+
